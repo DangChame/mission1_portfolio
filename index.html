@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>최치원 | 포트폴리오</title>
+
+  <!-- 외부 스타일시트 연결. HTML 안에 style 속성을 쓰지 않고 전부 여기로 뺀다. -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 자바스크립트는 defer로 연결한다.
+       defer는 "HTML을 다 읽은 뒤에 실행하라"는 뜻이다.
+       이게 없으면 스크립트가 먼저 돌아서 아직 없는 요소를 찾다가 null이 된다.
+       defer끼리는 적힌 순서대로 실행되므로 state.js가 항상 제일 먼저 돈다. -->
+  <script src="js/state.js" defer></script>
+  <script src="js/theme.js" defer></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/projects.js" defer></script>
+  <script src="js/form.js" defer></script>
+  <script src="js/animate.js" defer></script>
+</head>
+
+<body>
+
+<!-- ============================================================
+     헤더 / 네비게이션
+     header, nav 는 시맨틱 태그다. div로 감싸면 브라우저는
+     "그냥 상자"로 보지만, header는 "이 페이지의 머리말"이라고
+     알려준다. 검색엔진과 스크린리더가 이 차이를 읽는다.
+     ============================================================ -->
+<header class="header" id="header">
+  <nav class="nav" aria-label="주요 메뉴">
+    <a href="#hero" class="nav__logo">최치원</a>
+
+    <!-- 모바일에서만 보이는 햄버거 버튼.
+         aria-expanded는 "메뉴가 지금 열려 있는지"를 알려주는 값이고
+         자바스크립트가 true/false로 바꿔준다. -->
+    <button class="nav__toggle" id="navToggle"
+            aria-label="메뉴 열기" aria-expanded="false">
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+    </button>
+
+    <!-- 각 섹션으로 이동하는 앵커 링크.
+         href="#about" 는 id가 about인 요소로 가라는 뜻이다. -->
+    <ul class="nav__menu" id="navMenu">
+      <li><a href="#about" class="nav__link">About</a></li>
+      <li><a href="#skills" class="nav__link">Skills</a></li>
+      <li><a href="#projects" class="nav__link">Projects</a></li>
+      <li><a href="#contact" class="nav__link">Contact</a></li>
+      <li>
+        <button class="nav__theme" id="themeToggle"
+                aria-label="다크 모드 전환">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- main 은 이 페이지의 본문 전체를 감싼다. 한 페이지에 하나만 쓴다. -->
+<main>
+
+  <!-- ============================================================
+       1. Hero — 인사말과 CTA 버튼
+       ============================================================ -->
+  <section class="hero" id="hero">
+    <div class="container hero__inner">
+      <p class="hero__hello">Hello!</p>
+      <h1 class="hero__title">저는 <strong>최치원</strong>입니다</h1>
+      <p class="hero__desc">
+        코디세이에서 AI·SW를 배우고 있습니다.<br>
+        기술이 현실의 제약 안에서 어떻게 설계되는지에 관심이 있습니다.
+      </p>
+      <div class="hero__buttons">
+        <a href="#projects" class="button button--primary">프로젝트 보기</a>
+        <a href="#contact" class="button button--ghost">연락하기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. About — 자기소개와 프로필 이미지
+       ============================================================ -->
+  <section class="section" id="about">
+    <div class="container">
+      <h2 class="section__title">About</h2>
+
+      <div class="about">
+        <!-- 모든 이미지에는 alt가 있어야 한다.
+             alt는 이미지가 안 뜰 때 대신 읽히는 글이라
+             "사진"처럼 쓰면 의미가 없다. 무엇을 찍은 사진인지 적는다. -->
+        <img class="about__photo" src="images/profile.svg"
+             alt="최치원 프로필 사진">
+
+        <div class="about__text">
+          <p>
+            파이썬으로 콘솔 프로그램을, 도커로 개발 환경을 만들어보며 시작했습니다.
+            지금은 웹으로 넘어와 브라우저가 실제로 무슨 일을 하는지 배우는 중입니다.
+          </p>
+          <p>
+            혼자 다 해보고 막히면 동료에게 묻는 방식이 잘 맞았습니다.
+            남에게 설명할 수 있을 때까지 파고드는 편입니다.
+          </p>
+          <ul class="about__list">
+            <li><strong>관심</strong> AI 서비스 기획과 개발을 함께 다루는 일</li>
+            <li><strong>위치</strong> 서울</li>
+            <li><strong>지금</strong> 코디세이 AI 올인원 본과정</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. Skills — 기술 스택 목록
+       ============================================================ -->
+  <section class="section section--alt" id="skills">
+    <div class="container">
+      <h2 class="section__title">Skills</h2>
+
+      <div class="skills">
+        <article class="card skill">
+          <h3 class="skill__name">Language</h3>
+          <ul class="skill__list">
+            <li>Python</li>
+            <li>JavaScript</li>
+            <li>Shell</li>
+          </ul>
+        </article>
+
+        <article class="card skill">
+          <h3 class="skill__name">Web</h3>
+          <ul class="skill__list">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>DOM &amp; Fetch API</li>
+          </ul>
+        </article>
+
+        <article class="card skill">
+          <h3 class="skill__name">Tools</h3>
+          <ul class="skill__list">
+            <li>Git &amp; GitHub</li>
+            <li>Docker</li>
+            <li>VS Code</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. Projects — GitHub API로 채워지는 자리
+       비어 있는 게 정상이다. 자바스크립트가 여기에 카드를 넣는다.
+       ============================================================ -->
+  <section class="section" id="projects">
+    <div class="container">
+      <h2 class="section__title">Projects</h2>
+      <p class="section__desc">GitHub 저장소를 불러와 보여줍니다.</p>
+
+      <!-- 언어별 필터 버튼이 들어갈 자리 (보너스 과제 1) -->
+      <div class="filters" id="projectFilters"></div>
+
+      <!-- 프로젝트 카드가 들어갈 자리 -->
+      <div class="projects" id="projectList"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. Contact — 문의 폼
+       ============================================================ -->
+  <section class="section section--alt" id="contact">
+    <div class="container container--narrow">
+      <h2 class="section__title">Contact</h2>
+
+      <!-- novalidate 를 붙여 브라우저 기본 검증을 끄고
+           우리가 만든 검증만 동작하게 한다. -->
+      <form class="form" id="contactForm" novalidate>
+
+        <!-- label 의 for 와 input 의 id 가 같아야 서로 연결된다.
+             연결되면 label 글자를 눌러도 입력창에 커서가 간다. -->
+        <div class="form__row">
+          <label class="form__label" for="name">이름</label>
+          <input class="form__input" type="text" id="name" name="name"
+                 placeholder="홍길동">
+          <p class="form__error" id="nameError"></p>
+        </div>
+
+        <div class="form__row">
+          <label class="form__label" for="email">이메일</label>
+          <input class="form__input" type="email" id="email" name="email"
+                 placeholder="you@example.com">
+          <p class="form__error" id="emailError"></p>
+        </div>
+
+        <div class="form__row">
+          <label class="form__label" for="message">메시지</label>
+          <textarea class="form__input form__input--area" id="message"
+                    name="message" rows="5"
+                    placeholder="하고 싶은 말을 적어주세요"></textarea>
+          <p class="form__error" id="messageError"></p>
+        </div>
+
+        <button class="button button--primary button--full" type="submit">
+          보내기
+        </button>
+
+        <p class="form__success" id="formSuccess"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     6. Footer — 저작권과 소셜 링크
+     ============================================================ -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">&copy; 2026 최치원</p>
+    <ul class="footer__links">
+      <li><a href="https://github.com/DangChame" target="_blank"
+             rel="noopener noreferrer">GitHub</a></li>
+      <li><a href="mailto:ekdcoal@naver.com">Email</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- 스크롤을 내리면 나타나는 맨 위로 가기 버튼 -->
+<button class="to-top" id="toTop" aria-label="맨 위로 이동">↑</button>
+
+</body>
+</html>

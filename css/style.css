@@ -1,0 +1,722 @@
+/* ============================================================
+   0. CSS 변수
+   :root 는 문서 전체를 가리키는 선택자다. 여기에 --이름: 값 으로
+   적어두면 아래에서 var(--이름) 으로 꺼내 쓸 수 있다.
+   색을 바꿀 때 이 블록 하나만 고치면 전체가 따라 바뀐다.
+   ============================================================ */
+:root {
+  /* 색 */
+  --color-bg: #ffffff;
+  --color-surface: #f6f7f9;
+  --color-text: #1c1f23;
+  --color-muted: #5f6672;
+  --color-border: #e2e5ea;
+  --color-accent: #2f6df6;
+  --color-accent-weak: #e8efff;
+  --color-danger: #d64545;
+  --color-success: #1f8b53;
+
+  /* 그림자 */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 6px 20px rgba(16, 24, 40, 0.10);
+
+  /* 폰트 */
+  --font-body: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+               "Malgun Gothic", "맑은 고딕", sans-serif;
+
+  /* 간격 */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 72px;
+
+  /* 기타 */
+  --radius: 12px;
+  --header-height: 64px;
+  --transition: 0.25s ease;
+}
+
+/* 다크 모드용 변수.
+   html 태그의 data-theme 속성이 "dark" 일 때만 이 값들이 적용된다.
+   자바스크립트는 색을 하나씩 바꾸는 게 아니라 이 속성 하나만 바꾼다. */
+[data-theme="dark"] {
+  --color-bg: #14171c;
+  --color-surface: #1b1f26;
+  --color-text: #e8eaed;
+  --color-muted: #9aa3b0;
+  --color-border: #2b313a;
+  --color-accent: #6f9bff;
+  --color-accent-weak: #1e2735;
+  --color-danger: #ff8b8b;
+  --color-success: #5fd398;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   1. 기본값 정리
+   ============================================================ */
+* {
+  box-sizing: border-box;   /* padding을 넣어도 요소 폭이 늘어나지 않게 한다 */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.7;
+  /* 다크 모드로 바뀔 때 색이 툭 바뀌지 않고 부드럽게 넘어가도록 */
+  transition: background-color var(--transition), color var(--transition);
+}
+
+/* 네비게이션 메뉴를 눌렀을 때 부드럽게 스크롤되도록.
+   앵커로 이동하면 헤더에 가려지므로 scroll-padding-top으로 그만큼 띄운다. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 가운데 정렬용 상자. 좌우 여백도 여기서 준다. */
+.container {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+.container--narrow {
+  max-width: 620px;
+}
+
+/* ============================================================
+   2. 헤더 / 네비게이션  (Flexbox)
+   Flexbox는 요소를 한 줄로 늘어놓는 방식이다.
+   justify-content: space-between 은 남는 공간을 가운데로 몰아
+   로고는 왼쪽 끝, 나머지는 오른쪽 끝으로 밀어낸다.
+   ============================================================ */
+.header {
+  position: fixed;          /* 스크롤해도 위에 붙어 있게 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  z-index: 100;             /* 다른 요소보다 위에 그린다 */
+  background-color: transparent;
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* 스크롤을 60px 이상 내리면 자바스크립트가 이 클래스를 붙인다 */
+.header--scrolled {
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+.nav__logo {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* 햄버거 버튼 — 모바일에서만 보인다 */
+.nav__toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.nav__bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+/* 메뉴가 열려 있을 때 햄버거를 X 모양으로 바꾼다.
+   위 막대는 아래로 내려 눕히고, 가운데는 숨기고, 아래 막대는 올려 눕힌다. */
+.nav__toggle.active .nav__bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav__toggle.active .nav__bar:nth-child(2) {
+  opacity: 0;
+}
+.nav__toggle.active .nav__bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* 모바일 기준 메뉴 — 화면 밖에 숨겨두고, active가 붙으면 내려온다 */
+.nav__menu {
+  position: absolute;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+
+  /* 숨김 상태: 위로 접어 올리고 투명하게, 클릭도 안 되게 */
+  transform: translateY(-12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.nav__menu.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav__link {
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.nav__link:hover {
+  color: var(--color-accent);
+}
+
+.nav__theme {
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ============================================================
+   3. 공통 — 버튼, 카드, 섹션
+   ============================================================ */
+.button {
+  display: inline-block;
+  padding: 12px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform var(--transition), background-color var(--transition),
+              box-shadow var(--transition);
+}
+
+.button:hover {
+  transform: translateY(-2px);   /* 살짝 떠오르는 느낌 */
+  box-shadow: var(--shadow-md);
+}
+
+.button--primary {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
+
+.button--ghost {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.button--full {
+  width: 100%;
+}
+
+.button--small {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.section {
+  padding: var(--space-5) 0;
+}
+
+.section--alt {
+  background-color: var(--color-surface);
+}
+
+.section__title {
+  font-size: 26px;
+  margin-bottom: var(--space-2);
+}
+
+.section__desc {
+  color: var(--color-muted);
+  margin-bottom: var(--space-3);
+}
+
+/* ============================================================
+   4. Hero
+   ============================================================ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg,
+              var(--color-accent-weak) 0%, var(--color-bg) 100%);
+}
+
+.hero__hello {
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.hero__title {
+  font-size: 32px;
+  line-height: 1.35;
+  margin-bottom: var(--space-2);
+}
+
+.hero__desc {
+  color: var(--color-muted);
+  margin-bottom: var(--space-3);
+}
+
+.hero__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ============================================================
+   5. About
+   ============================================================ */
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.about__photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-border);
+}
+
+.about__text p {
+  margin-bottom: var(--space-2);
+  color: var(--color-muted);
+}
+
+.about__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.about__list strong {
+  display: inline-block;
+  min-width: 56px;
+  color: var(--color-accent);
+}
+
+/* ============================================================
+   6. Skills  (Grid)
+   ============================================================ */
+.skills {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+
+.skill__name {
+  font-size: 17px;
+  margin-bottom: var(--space-1);
+}
+
+.skill__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.skill__list li {
+  background-color: var(--color-accent-weak);
+  color: var(--color-accent);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 14px;
+}
+
+/* ============================================================
+   7. Projects  (Grid + auto-fit + minmax)
+   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) 는
+   "칸 하나는 최소 260px, 남으면 늘려서 채우고,
+    들어갈 만큼만 자동으로 열을 만들어라" 는 뜻이다.
+   미디어 쿼리 없이도 화면 폭에 따라 열 수가 알아서 바뀐다.
+   ============================================================ */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.filter {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: var(--color-bg);
+  color: var(--color-muted);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.filter:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.filter.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-2);
+}
+
+.project__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.project__name {
+  font-size: 17px;
+  word-break: break-all;
+}
+
+.project__lang {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--color-accent);
+  background-color: var(--color-accent-weak);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.project__desc {
+  color: var(--color-muted);
+  font-size: 14px;
+  margin-bottom: var(--space-2);
+  min-height: 42px;
+}
+
+.project__meta {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+/* 로딩 / 에러 / 빈 상태가 공통으로 쓰는 안내 상자.
+   grid-column: 1 / -1 은 "격자의 첫 열부터 끝 열까지 다 쓰라"는 뜻이라
+   한 칸짜리로 찌그러지지 않고 가로 전체를 차지한다. */
+.status {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-4) var(--space-2);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-muted);
+}
+
+.status__title {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+/* 에러 상태에 나오는 다시 시도 버튼 */
+.status__retry {
+  margin-top: var(--space-2);
+}
+
+/* 로딩 스피너 — 원을 그리고 한쪽만 색을 넣은 뒤 계속 돌린다 */
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto var(--space-2);
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   8. Contact 폼
+   ============================================================ */
+.form__row {
+  margin-bottom: var(--space-2);
+}
+
+.form__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form__input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color var(--transition);
+}
+
+.form__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.form__input--area {
+  resize: vertical;
+}
+
+/* 검증에 걸린 입력창 */
+.form__input.invalid {
+  border-color: var(--color-danger);
+}
+
+/* 에러 메시지는 입력창 바로 아래에 둔다.
+   내용이 비어 있으면 자리를 차지하지 않도록 min-height를 주지 않는다. */
+.form__error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.form__success {
+  color: var(--color-success);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: var(--space-2);
+  text-align: center;
+}
+
+/* ============================================================
+   9. Footer
+   ============================================================ */
+.footer {
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-3) 0;
+}
+
+.footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.footer__links {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.footer__links a {
+  transition: color var(--transition);
+}
+
+.footer__links a:hover {
+  color: var(--color-accent);
+}
+
+/* ============================================================
+   10. 맨 위로 가기 버튼
+   ============================================================ */
+.to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  z-index: 90;
+
+  /* 평소에는 숨김. 스크롤 300px을 넘으면 visible 클래스가 붙는다. */
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ============================================================
+   11. 스크롤 애니메이션
+   기본은 아래로 조금 내려가 있고 투명한 상태.
+   화면에 들어오면 자바스크립트가 is-visible을 붙여 제자리로 올린다.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 움직임을 불편해하는 사용자는 시스템 설정으로 이를 끌 수 있다.
+   그 경우 애니메이션을 없앤다. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   12. 반응형 — 모바일 퍼스트
+   지금까지 쓴 게 전부 모바일 기준이다.
+   여기서부터 min-width로 "화면이 이보다 넓으면" 덧칠한다.
+   ============================================================ */
+
+/* --- 태블릿 이상 (768px) --- */
+@media (min-width: 768px) {
+  /* 햄버거 버튼을 숨기고 메뉴를 원래대로 한 줄에 펼친다 */
+  .nav__toggle {
+    display: none;
+  }
+
+  .nav__menu {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+    gap: var(--space-3);
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+
+    /* 모바일에서 걸어둔 숨김 설정을 되돌린다 */
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hero__title {
+    font-size: 44px;
+  }
+
+  .about {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .about__photo {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+  }
+
+  .skills {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .footer__inner {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* --- 데스크톱 이상 (1024px) --- */
+@media (min-width: 1024px) {
+  .hero__title {
+    font-size: 54px;
+  }
+
+  .hero__desc {
+    font-size: 18px;
+  }
+
+  .section {
+    padding: 96px 0;
+  }
+}
