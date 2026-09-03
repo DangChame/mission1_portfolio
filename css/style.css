@@ -697,7 +697,9 @@ a {
   }
 
   .skills {
-    grid-template-columns: repeat(3, 1fr);
+    /* 카드 개수가 몇 개든 자연스럽게 놓이도록 최소·최대 폭만 정해둔다.
+       고정 3열로 두면 카드가 하나일 때 화면 전체로 늘어난다. */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 300px));
   }
 
   .footer__inner {
