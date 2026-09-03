@@ -67,6 +67,10 @@ function renderForm() {
 
     // 문제가 있는 입력창은 테두리를 빨갛게
     field.input.classList.toggle('invalid', Boolean(message));
+
+    // 색은 눈으로만 보인다. 스크린리더에게도 알려주려면 속성이 필요하다.
+    // aria-invalid="true" 는 "이 칸의 값이 잘못됐다"는 뜻이다.
+    field.input.setAttribute('aria-invalid', message ? 'true' : 'false');
   });
 
   formSuccess.textContent = success;

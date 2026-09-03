@@ -172,31 +172,36 @@
              연결되면 label 글자를 눌러도 입력창에 커서가 간다. -->
         <div class="form__row">
           <label class="form__label" for="name">이름</label>
+          <!-- aria-describedby 는 "이 입력창의 설명은 저기 있다"고 알려준다.
+               스크린리더가 입력창에 들어오면 연결된 에러 문구도 같이 읽는다. -->
           <input class="form__input" type="text" id="name" name="name"
-                 placeholder="홍길동">
-          <p class="form__error" id="nameError"></p>
+                 placeholder="홍길동" aria-describedby="nameError">
+          <!-- aria-live="polite" 는 이 자리의 글자가 바뀌면
+               스크린리더가 하던 말을 끊지 않고 이어서 읽어주라는 뜻이다. -->
+          <p class="form__error" id="nameError" aria-live="polite"></p>
         </div>
 
         <div class="form__row">
           <label class="form__label" for="email">이메일</label>
           <input class="form__input" type="email" id="email" name="email"
-                 placeholder="you@example.com">
-          <p class="form__error" id="emailError"></p>
+                 placeholder="you@example.com" aria-describedby="emailError">
+          <p class="form__error" id="emailError" aria-live="polite"></p>
         </div>
 
         <div class="form__row">
           <label class="form__label" for="message">메시지</label>
           <textarea class="form__input form__input--area" id="message"
                     name="message" rows="5"
-                    placeholder="하고 싶은 말을 적어주세요"></textarea>
-          <p class="form__error" id="messageError"></p>
+                    placeholder="하고 싶은 말을 적어주세요"
+                    aria-describedby="messageError"></textarea>
+          <p class="form__error" id="messageError" aria-live="polite"></p>
         </div>
 
         <button class="button button--primary button--full" type="submit">
           보내기
         </button>
 
-        <p class="form__success" id="formSuccess"></p>
+        <p class="form__success" id="formSuccess" aria-live="polite"></p>
       </form>
     </div>
   </section>
